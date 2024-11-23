@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クイズBOX-送信</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    button {
+      background: linear-gradient(145deg, #ff5c8d, #f3346c);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(145deg, #f3346c, #ff5c8d);
+    }
+
+    #alert {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>クイズ送信フォーム</h1>
+    <form id="quizForm" onsubmit="event.preventDefault(); sendQuiz();">
+      <label for="mondai">クイズ</label>
+      <input type="text" id="mondai" placeholder="クイズを入力してください" required>
+
+      <label for="kotae">答え</label>
+      <input type="text" id="kotae" placeholder="答えを入力してください" required>
+
+      <label for="setsumei">説明 (任意)</label>
+      <textarea id="setsumei" placeholder="クイズの説明を入力できます"></textarea>
+
+      <button type="submit">送信</button>
+    </form>
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtF44ufZ_wnD6Rcu_Yn3AAa2wEp0RnSV0",
+            authDomain: "quiz-box-38404.firebaseapp.com",
+            databaseURL: "https://quiz-box-38404-default-rtdb.firebaseio.com",
+            projectId: "quiz-box-38404",
+            storageBucket: "quiz-box-38404.firebasestorage.app",
+            messagingSenderId: "297421661814",
+            appId: "1:297421661814:web:3e1591fff0238a049f2157",
+            measurementId: "G-E9HW3GJRB9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.sendQuiz = function() {
+            const mondai = document.getElementById('mondai').value;
+            const kotae = document.getElementById('kotae').value;
+            const setsumei = document.getElementById('setsumei').value;
+
+            if (mondai && kotae) {
+                const newRef = ref(db, 'testData/' + Date.now());
+                set(newRef, {
+                    mondai: mondai,
+                    kotae: kotae,
+                    setsumei: setsumei
+                })
+                .then(() => {
+                    alert("データが送信されました！");
+                })
+                .catch((error) => {
+                    alert("エラーが発生しました: " + error);
+                });
+            } else {
+                alert("すべて入力してください");
+            }
+        };
+    </script>
+
+</body>
+</html>
