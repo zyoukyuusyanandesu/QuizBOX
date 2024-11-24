@@ -4,17 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クイズBOX 送信</title>
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f7fc;
+      background: linear-gradient(145deg, #ffffff, #ffc7c7, #ffc2c2);
+      background-size: 300% 300%; /* より広い範囲で揺らぎを表現 */
+      animation: gradientShift 10s ease infinite; /* アニメーション設定 */
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     .container {
@@ -53,7 +66,7 @@
     }
 
     button {
-      background: linear-gradient(145deg, #ff5c8d, #f3346c);
+      background: linear-gradient(145deg, #ff8c8c, #ffb3b3);
       color: white;
       border: none;
       padding: 12px 20px;
@@ -65,7 +78,7 @@
     }
 
     button:hover {
-      background: linear-gradient(145deg, #f3346c, #ff5c8d);
+      background: linear-gradient(145deg, #ffb3b3, #ff8c8c);
     }
 
     #alert {
@@ -91,47 +104,49 @@
 
       <button type="submit">送信</button>
     </form>
-<script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAtF44ufZ_wnD6Rcu_Yn3AAa2wEp0RnSV0",
-            authDomain: "quiz-box-38404.firebaseapp.com",
-            databaseURL: "https://quiz-box-38404-default-rtdb.firebaseio.com",
-            projectId: "quiz-box-38404",
-            storageBucket: "quiz-box-38404.firebasestorage.app",
-            messagingSenderId: "297421661814",
-            appId: "1:297421661814:web:3e1591fff0238a049f2157",
-            measurementId: "G-E9HW3GJRB9"
-        };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtF44ufZ_wnD6Rcu_Yn3AAa2wEp0RnSV0",
+      authDomain: "quiz-box-38404.firebaseapp.com",
+      databaseURL: "https://quiz-box-38404-default-rtdb.firebaseio.com",
+      projectId: "quiz-box-38404",
+      storageBucket: "quiz-box-38404.firebasestorage.app",
+      messagingSenderId: "297421661814",
+      appId: "1:297421661814:web:3e1591fff0238a049f2157",
+      measurementId: "G-E9HW3GJRB9"
+    };
 
-        window.sendQuiz = function() {
-            const mondai = document.getElementById('mondai').value;
-            const kotae = document.getElementById('kotae').value;
-            const setsumei = document.getElementById('setsumei').value;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-            if (mondai && kotae) {
-                const newRef = ref(db, 'testData/' + Date.now());
-                set(newRef, {
-                    mondai: mondai,
-                    kotae: kotae,
-                    setsumei: setsumei
-                })
-                .then(() => {
-                    alert("データが送信されました！");
-                })
-                .catch((error) => {
-                    alert("エラーが発生しました。このエラーメッセージが何度も表示される場合、管理者に相談してください: " + error);
-                });
-            } else {
-                alert("すべて入力してください");
-            }
-        };
-    </script>
+    window.sendQuiz = function() {
+      const mondai = document.getElementById('mondai').value;
+      const kotae = document.getElementById('kotae').value;
+      const setsumei = document.getElementById('setsumei').value;
 
+      if (mondai && kotae) {
+        const newRef = ref(db, 'testData/' + Date.now());
+        set(newRef, {
+          mondai: mondai,
+          kotae: kotae,
+          setsumei: setsumei
+        })
+        .then(() => {
+          alert("データが送信されました！");
+        })
+        .catch((error) => {
+          alert("エラーが発生しました: " + error);
+        });
+      } else {
+        alert("すべて入力してください");
+      }
+    };
+  </script>
 </body>
 </html>
+
