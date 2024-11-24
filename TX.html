@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クイズBOX 送信</title>
-
+　<link rel="icon" href="favicon.ico" type="image/x-icon"/>
+　<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -78,7 +79,7 @@
 <body>
 
   <div class="container">
-    <h1>クイズ送信フォーム</h1>
+    <h1>クイズBOX 送信</h1>
     <form id="quizForm" onsubmit="event.preventDefault(); sendQuiz();">
       <label for="mondai">クイズ</label>
       <input type="text" id="mondai" placeholder="クイズを入力してください" required>
@@ -125,7 +126,7 @@
                     alert("データが送信されました！");
                 })
                 .catch((error) => {
-                    alert("エラーが発生しました: " + error);
+                    alert("エラーが発生しました。このエラーメッセージが何度も表示される場合、管理者に相談してください: " + error);
                 });
             } else {
                 alert("すべて入力してください");
