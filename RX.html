@@ -230,7 +230,7 @@
     }
 
     function updateQuizCheck(key, checked) {
-      const quizRef = ref(db, 'QuizData/' + key);
+      const quizRef = ref(db, 'Testdata/' + key);
       update(quizRef, { checked: checked })
         .then(() => {
           updateQuizCount();
