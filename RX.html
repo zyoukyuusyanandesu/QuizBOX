@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,26 +8,30 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fffacd; /* 薄い黄色 */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fcfafb; /* 薄い黄色 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
 
-    .container {
-      position: relative;
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 800px;
-    }
+.container {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  background-image: url('https://chojugiga.com/c/choju81_0038/choju81_0038.png');
+  background-size: cover; /* 背景画像を自動調整 */
+  background-position: center; /* 画像を中央に配置 */
+}
+
 
     h1 {
       text-align: center;
@@ -269,6 +274,21 @@
       document.getElementById('quizDetails').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
+    function setRandomBackground() {
+  const images = [
+    "https://chojugiga.com/c/choju72_0030/choju72_0030.png",
+    "https://chojugiga.com/c/choju81_0038/choju81_0038.png"
+  ];
+
+  const randomImage = images[Math.floor(Math.random() * images.length)];
+  const container = document.querySelector('.container');
+  container.style.backgroundImage = `url('${randomImage}')`;
+  container.style.backgroundSize = 'cover';
+  container.style.backgroundPosition = 'center';
+}
+
+// ページ読み込み時に背景を設定
+setRandomBackground();
 
     loadQuizzes();
   </script>
