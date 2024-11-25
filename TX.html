@@ -131,7 +131,7 @@
       const setsumei = document.getElementById('setsumei').value;
 
       if (mondai && kotae) {
-        const newRef = ref(db, 'testData/' + Date.now());
+        const newRef = ref(db, 'QuizData/' + Date.now());
         set(newRef, {
           mondai: mondai,
           kotae: kotae,
