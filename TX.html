@@ -10,13 +10,15 @@
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(145deg, #ff8c8c, #ffcccc, #ffb3b3);
-      background-size: 300% 300%; /* より広い範囲で揺らぎを表現 */
-      animation: gradientShift 10s ease infinite; /* アニメーション設定 */
+      background-size: 300% 300%; 
+      animation: gradientShift 10s ease infinite; 
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      position: relative;
+      overflow: hidden;
     }
 
     @keyframes gradientShift {
@@ -38,6 +40,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 500px;
+      z-index: 10;
     }
 
     h1 {
@@ -87,6 +90,85 @@
       text-align: center;
       font-size: 14px;
     }
+
+    #frog, #dinosaur {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    #frog {
+      top: 50px;
+      left: 50px;
+      animation: moveFrog 8s infinite linear;
+    }
+
+    #dinosaur {
+      top: 200px;
+      left: 200px;
+      animation: moveDinosaur 8s infinite linear;
+    }
+
+    @keyframes moveFrog {
+      0% {
+        top: 50px;
+        left: 50px;
+      }
+      25% {
+        top: 100px;
+        left: 80%;
+      }
+      50% {
+        top: 80%;
+        left: 90%;
+      }
+      75% {
+        top: 10%;
+        left: 10%;
+      }
+      100% {
+        top: 50px;
+        left: 50px;
+      }
+    }
+
+    @keyframes moveDinosaur {
+      0% {
+        top: 200px;
+        left: 200px;
+      }
+      25% {
+        top: 30%;
+        left: 90%;
+      }
+      50% {
+        top: 70%;
+        left: 10%;
+      }
+      75% {
+        top: 50%;
+        left: 70%;
+      }
+      100% {
+        top: 200px;
+        left: 200px;
+      }
+    }
+
+    /* メディアクエリで画面が小さい場合でもレイアウトを調整 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+        max-width: 400px;
+      }
+
+      #frog, #dinosaur {
+        width: 100px;
+        height: 100px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -106,6 +188,9 @@
       <button type="submit">送信</button>
     </form>
   </div>
+
+  <img id="frog" src="https://chojugiga.com/c/chojuganso0009/chojuganso0009.png" alt="蛙">
+  <img id="dinosaur" src="https://iconbu.com/wp-content/uploads/2019/10/unnamed-file.png" alt="恐竜">
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -148,5 +233,6 @@
       }
     };
   </script>
+
 </body>
 </html>
