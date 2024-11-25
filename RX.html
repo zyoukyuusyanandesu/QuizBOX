@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,9 +27,12 @@ body {
   width: 100%;
   max-width: 800px;
   background-image: url('https://chojugiga.com/c/choju81_0038/choju81_0038.png');
-  background-size: cover; /* 背景画像を自動調整 */
+  background-size: 120%; /* 画像サイズを少し大きくして、余白を作る */
   background-position: center; /* 画像を中央に配置 */
+  background-attachment: fixed; /* スクロールしても画像の位置が固定される */
+  background-repeat: no-repeat; /* 画像が繰り返し表示されないようにする */
 }
+
 
 
     h1 {
@@ -88,22 +90,23 @@ body {
       white-space: nowrap;
     }
 
-    .quiz-details {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 40px 20px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      max-width: 500px;
-      width: 90%;
-      display: none;
-      z-index: 10;
-      overflow-y: auto;
-      max-height: 80vh;
-    }
+.quiz-details {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 40px 20px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  display: none;
+  z-index: 10;
+  overflow-y: scroll; /* auto より scroll を使うと確実 */
+  max-height: 80vh;    /* 高さを80%に制限 */
+  height: 70vh;        /* 固定高さを設定してみる */
+}
 
     .quiz-details h2 {
       margin-top: 0;
