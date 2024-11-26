@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,39 +8,39 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fcfafb;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      position: relative;
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 800px;
-      height: 90vh;
-      overflow: hidden;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fcfafb; /* 薄い黄色 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  background-size: 120%;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  height: 90vh; /* 高さを90%に固定 */
+  overflow: hidden; /* 全体でスクロールを抑制 */
+}
+
     h1 {
       text-align: center;
       color: #ff5c8d;
       margin: 0;
     }
-    .timer-container {
-      margin-top: 20px;
-      text-align: center;
-    }
-    .slider {
-      width: 100%;
-    }
+
     .quiz-count {
       position: absolute;
       top: 10px;
@@ -51,12 +52,14 @@
       font-size: 14px;
       font-weight: bold;
     }
+
     .quiz-cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 20px;
       margin-top: 20px;
     }
+
     .quiz-card {
       background-color: #fff;
       border: 1px solid #ddd;
@@ -64,19 +67,53 @@
       padding: 15px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
     }
-    .quiz-details {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 40px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      display: none;
-      z-index: 10;
+
+    .quiz-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
+
+    .quiz-card h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .quiz-card p {
+      font-size: 14px;
+      color: #777;
+      max-height: 3em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+.quiz-details {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 40px 20px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  display: none;
+  z-index: 10;
+  overflow-y: scroll; /* auto より scroll を使うと確実 */
+  max-height: 80vh;    /* 高さを80%に制限 */
+  height: 70vh;        /* 固定高さを設定してみる */
+}
+
+    .quiz-details h2 {
+      margin-top: 0;
+      font-size: 17px;
+      word-wrap: break-word;
+    }
+
     .close-btn {
       position: absolute;
       top: 10px;
@@ -88,6 +125,13 @@
       border: none;
       border-radius: 4px;
     }
+
+    .checkbox-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     .overlay {
       position: fixed;
       top: 0;
@@ -98,20 +142,18 @@
       display: none;
       z-index: 5;
     }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="quiz-count" id="quizCount">0 / 0</div>
     <h1>クイズBOX</h1>
-    
-    <!-- タイマー設定スライダー -->
-    <div class="timer-container">
-      <label for="timeSlider">時間設定 (秒): </label>
-      <input type="range" id="timeSlider" class="slider" min="30" max="600" value="300">
-      <div id="timeDisplay">5:00</div>
-    </div>
-
     <div class="quiz-cards" id="quizCards"></div>
   </div>
 
@@ -142,38 +184,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // タイマーを管理する変数
-    let timerInterval;
-    let remainingTime = 300; // デフォルト5分
-
-    // タイマー表示を更新
-    function updateTimerDisplay() {
-      const minutes = Math.floor(remainingTime / 60);
-      const seconds = remainingTime % 60;
-      document.getElementById('timeDisplay').textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    // タイマーをスタート
-    function startTimer() {
-      clearInterval(timerInterval); // 既存のタイマーをクリア
-      timerInterval = setInterval(() => {
-        if (remainingTime > 0) {
-          remainingTime--;
-          updateTimerDisplay();
-        } else {
-          clearInterval(timerInterval);
-          alert('時間が経過しました！');
-        }
-      }, 1000);
-    }
-
-    // スライダーの変更イベント
-    document.getElementById('timeSlider').addEventListener('input', (event) => {
-      remainingTime = parseInt(event.target.value);
-      updateTimerDisplay();
-    });
-
-    // クイズデータの読み込み
     function loadQuizzes() {
       const quizCardsContainer = document.getElementById('quizCards');
       const dbRef = ref(db, 'testData/');
@@ -197,26 +207,61 @@
         });
     }
 
-    // クイズカード作成
     function createQuizCard(quiz, key) {
       const card = document.createElement('div');
       card.classList.add('quiz-card');
+      const isChecked = quiz.checked || false;
+
+      const checkboxId = `checkbox-${key}`;
+      card.innerHTML = `
+        <h3>${quiz.mondai}</h3>
+        <p>${quiz.setsumei || '説明はありません。'}</p>
+        <div class="checkbox-wrapper">
+          <label>完了</label>
+          <input type="checkbox" id="${checkboxId}" ${isChecked ? 'checked' : ''}>
+        </div>
+      `;
+
+      const checkbox = card.querySelector(`#${checkboxId}`);
+      checkbox.addEventListener('click', (event) => {
+        event.stopPropagation();
+        updateQuizCheck(key, checkbox.checked);
+      });
+
       card.onclick = function(event) {
-        openQuizDetails(quiz);
+        if (event.target.tagName.toLowerCase() !== 'input') {
+          openQuizDetails(quiz);
+        }
       };
-
-      const title = document.createElement('h3');
-      title.textContent = quiz.mondai;
-      const description = document.createElement('p');
-      description.textContent = quiz.setsumei || "説明なし";
-
-      card.appendChild(title);
-      card.appendChild(description);
 
       return card;
     }
 
-    // クイズ詳細表示
+    function updateQuizCheck(key, checked) {
+      const quizRef = ref(db, 'testData/' + key);
+      update(quizRef, { checked: checked })
+        .then(() => {
+          updateQuizCount();
+          console.log("更新完了");
+        })
+        .catch((error) => console.error("更新エラー: ", error));
+    }
+
+    function updateQuizCount() {
+      const quizCards = document.querySelectorAll('.quiz-card');
+      const totalQuizzes = quizCards.length;
+      let completedQuizzes = 0;
+
+      quizCards.forEach((card) => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        if (checkbox && checkbox.checked) completedQuizzes++;
+      });
+
+      const remainingQuizzes = totalQuizzes - completedQuizzes;
+      const quizCountElement = document.getElementById('quizCount');
+      quizCountElement.textContent = `${totalQuizzes} / ${remainingQuizzes}`;
+    }
+
     function openQuizDetails(quiz) {
       document.getElementById('quizTitle').textContent = quiz.mondai;
       document.getElementById('quizAnswer').textContent = quiz.kotae;
@@ -225,34 +270,30 @@
       document.getElementById('overlay').style.display = 'block';
     }
 
-    // クイズ詳細閉じる
     document.getElementById('closeButton').addEventListener('click', closeQuizDetails);
     document.getElementById('overlay').addEventListener('click', closeQuizDetails);
-    
+
     function closeQuizDetails() {
       document.getElementById('quizDetails').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
+    function setRandomBackground() {
+  const images = [
+    "https://chojugiga.com/c/choju72_0030/choju72_0030.png",
+    "https://chojugiga.com/c/choju81_0038/choju81_0038.png"
+  ];
 
-    // クイズの数を更新
-    function updateQuizCount() {
-      const dbRef = ref(db, 'testData/');
-      get(dbRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const quizzes = snapshot.val();
-            const quizCount = Object.keys(quizzes).length;
-            document.getElementById('quizCount').textContent = `0 / ${quizCount}`;
-          }
-        })
-        .catch((error) => {
-          alert("エラーが発生しました: " + error);
-        });
-    }
+  const randomImage = images[Math.floor(Math.random() * images.length)];
+  const container = document.querySelector('.container');
+  container.style.backgroundImage = `url('${randomImage}')`;
+  container.style.backgroundSize = 'cover';
+  container.style.backgroundPosition = 'center';
+}
 
-    // 初期化
+// ページ読み込み時に背景を設定
+setRandomBackground();
+
     loadQuizzes();
-    updateTimerDisplay();
   </script>
 </body>
 </html>
